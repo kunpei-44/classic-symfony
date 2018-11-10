@@ -5,9 +5,10 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("/Inquiry")
+ * @Route("/inquiry")
  */
 
 class InquiryController extends Controller
@@ -18,7 +19,14 @@ class InquiryController extends Controller
      */
     public function indexAction()
     {
-        $form = $this->createFormBilder()
+        return $this->render('Inquiry/index.html.twig',
+                ['form' => $this->createInquiryForm()->createView()]
+        );
+    }
+    
+    private function createInquiryForm()
+    {
+        return $this->createFormBuilder()
                 ->add('name', 'text')
                 ->add('email', 'text')
                 ->add('tel', 'text', [
@@ -29,15 +37,38 @@ class InquiryController extends Controller
                         '公演について',
                         'その他',
                     ],
-                    'expand' => true,
+                    'expanded' => true,
                 ])
                 ->add('content', 'textarea')
                 ->add('submit', 'submit', [
                     'label' => '送信',
                 ])
                 ->getForm();
+    }
+    
+    /**
+     * @Route("/complete")
+     */
+    public function completeAction()
+    {
+        return $this->render('Inquiry/complete.html.twig');
+    }
+    
+    /**
+     * @Route("/")
+     * @Method("post")
+     */
+    public function indexPostAction(Request $request)
+    {
+        $form = $this->createInquiryForm();
+        $form->handleRequest($request);
+        if ($form->isValid())
+        {
+            return $this->redirect(
+                    $this->generateUrl('app_inquiry_complete'));
+        }
         
-        return $this->render('Inquiry_index.html.twig',
+        return $this->render('Inquiry/index.html.twig',
                 ['form' => $form->createView()]
         );
     }
