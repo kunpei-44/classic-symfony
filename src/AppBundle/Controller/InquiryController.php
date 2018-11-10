@@ -27,19 +27,27 @@ class InquiryController extends Controller
     private function createInquiryForm()
     {
         return $this->createFormBuilder()
-                ->add('name', 'text')
-                ->add('email', 'text')
+                ->add('name', 'text',[
+                    'label' => 'お名前',
+                ])
+                ->add('email', 'text',[
+                    'label' => 'メールアドレス',
+                ])
                 ->add('tel', 'text', [
+                    'label' => '電話番号',
                     'required' => false,
                 ])
                 ->add('type', 'choice', [
+                    'label' => 'お問い合わせ種別',
                     'choices' => [
                         '公演について',
                         'その他',
                     ],
                     'expanded' => true,
                 ])
-                ->add('content', 'textarea')
+                ->add('content', 'textarea',[
+                    'label' => 'お問い合わせ内容',
+                ])
                 ->add('submit', 'submit', [
                     'label' => '送信',
                 ])
